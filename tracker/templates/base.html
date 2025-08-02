@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Timesheet Management System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --danger-color: #e74c3c;
+      --light-gray: #f5f7fa;
+      --medium-gray: #e0e0e0;
+      --dark-gray: #95a5a6;
+      --text-color: #333;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--light-gray);
+      color: var(--text-color);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .header {
+      background-color: var(--secondary-color);
+      color: var(--white);
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .auth-options {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    .auth-card {
+      background-color: var(--white);
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 2rem;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .auth-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .auth-card h2 {
+      color: var(--secondary-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .auth-card p {
+      color: var(--dark-gray);
+      margin-bottom: 2rem;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--primary-color);
+      color: var(--white);
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: 500;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+    }
+
+    .btn-employee {
+      background-color: var(--success-color);
+    }
+
+    .btn-employee:hover {
+      background-color: #27ae60;
+    }
+
+    .btn-dept-head {
+      background-color: var(--warning-color);
+    }
+
+    .btn-dept-head:hover {
+      background-color: #e67e22;
+    }
+
+    .footer {
+      background-color: var(--secondary-color);
+      color: var(--white);
+      text-align: center;
+      padding: 1rem;
+      margin-top: auto;
+    }
+
+    @media (max-width: 768px) {
+      .auth-options {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .auth-card {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+      
+      .main-content {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">Timesheet Management System</div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="auth-options">
+      <div class="auth-card">
+        <h2>Employee Portal</h2>
+        <p>Access your timesheet dashboard to submit and track your work hours</p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+          <a href="{% url 'employee_signin' %}" class="btn btn-employee">Sign In</a>
+        </div>
+      </div>
+
+      <div class="auth-card">
+        <h2>Department Head Portal</h2>
+        <p>Manage department employees, approve timesheets, and generate reports</p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+          <a href="{% url 'department_head_signin' %}" class="btn btn-dept-head">Sign In</a>
+          <a href="{% url 'department_head_signup' %}" class="btn btn-dept-head">Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; {% now "Y" %} Timesheet Management System. All rights reserved.</p>
+  </footer>
+</body>
+</html>

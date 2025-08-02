@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Timesheets Report</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --danger-color: #e74c3c;
+      --light-gray: #f5f7fa;
+      --medium-gray: #e0e0e0;
+      --dark-gray: #95a5a6;
+      --text-color: #333;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--light-gray);
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background-color: var(--white);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: var(--secondary-color);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: var(--primary-color);
+      color: var(--white);
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: 500;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .btn-excel {
+      background-color: var(--success-color);
+    }
+
+    .btn-excel:hover {
+      background-color: #27ae60;
+    }
+
+    .filters {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 0;
+      flex-grow: 1;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      min-width: 150px;
+    }
+
+    label {
+      margin-bottom: 5px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    select, input {
+      padding: 8px 12px;
+      border-radius: 5px;
+      border: 1px solid var(--medium-gray);
+      font-size: 14px;
+      min-height: 38px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--medium-gray);
+      vertical-align: top;
+    }
+
+    th {
+      background-color: var(--secondary-color);
+      color: var(--white);
+      font-weight: 500;
+      position: sticky;
+      top: 0;
+    }
+
+    tr:hover {
+      background-color: rgba(0,0,0,0.02);
+    }
+
+    .status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .status-open { background-color: #e3f2fd; color: #1976d2; }
+    .status-submitted { background-color: #fff3e0; color: #f57c00; }
+    .status-approved { background-color: #e8f5e8; color: #388e3c; }
+    .status-rework { background-color: #fff8e1; color: #f9a825; }
+    .status-rejected { background-color: #ffebee; color: #d32f2f; }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .pagination a, .pagination span {
+      padding: 8px 12px;
+      border: 1px solid var(--medium-gray);
+      border-radius: 5px;
+      text-decoration: none;
+      color: var(--secondary-color);
+    }
+
+    .pagination a:hover {
+      background-color: var(--light-gray);
+    }
+
+    .pagination .current {
+      background-color: var(--primary-color);
+      color: var(--white);
+      border-color: var(--primary-color);
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 40px;
+      color: var(--dark-gray);
+    }
+
+    @media (max-width: 992px) {
+      .header-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+      }
+      
+      .filters {
+        gap: 10px;
+      }
+      
+      .filter-group {
+        min-width: calc(50% - 10px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+
+      th, td {
+        padding: 8px 10px;
+        font-size: 13px;
+      }
+      
+      .filter-group {
+        min-width: 100%;
+      }
+    }
+
+    @media (max-width: 576px) {
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Employee Timesheets Report</h1>
+    
+    <div class="header-actions">
+      <div class="filters">
+        <div class="filter-group">
+          <label for="department">Department</label>
+          <select id="department" name="department">
+            <option value="">All Departments</option>
+            {% for dept in departments %}
+              <option value="{{ dept.0 }}" {% if selected_department == dept.0 %}selected{% endif %}>{{ dept.1 }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="sub_department">Sub-Department</label>
+          <select id="sub_department" name="sub_department">
+            <option value="">All Sub-Departments</option>
+            {% for sub_dept in sub_departments %}
+              <option value="{{ sub_dept.0 }}" {% if selected_sub_department == sub_dept.0 %}selected{% endif %}>{{ sub_dept.1 }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="status">Status</label>
+          <select id="status" name="status">
+            <option value="">All Statuses</option>
+            {% for status in statuses %}
+              <option value="{{ status.0 }}" {% if selected_status == status.0 %}selected{% endif %}>{{ status.1 }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="date_from">From Date</label>
+          <input type="date" id="date_from" name="date_from" value="{{ date_from|default_if_none:'' }}">
+        </div>
+        
+        <div class="filter-group">
+          <label for="date_to">To Date</label>
+          <input type="date" id="date_to" name="date_to" value="{{ date_to|default_if_none:'' }}">
+        </div>
+      </div>
+      
+      <form method="post" action="{% url 'download_timesheets_excel' %}">
+        {% csrf_token %}
+        <input type="hidden" name="department" value="{{ selected_department }}">
+        <input type="hidden" name="sub_department" value="{{ selected_sub_department }}">
+        <input type="hidden" name="status" value="{{ selected_status }}">
+        <input type="hidden" name="date_from" value="{{ date_from|default_if_none:'' }}">
+        <input type="hidden" name="date_to" value="{{ date_to|default_if_none:'' }}">
+        <button type="submit" class="btn btn-excel">Download Excel</button>
+      </form>
+    </div>
+    
+    {% if employees_timesheets %}
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Employee ID</th>
+              <th>Name</th>
+              <th>Department</th>
+              <th>Sub-Department</th>
+              <th>Post</th>
+              <th>Duty</th>
+              <th>Date</th>
+              <th>Hours</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for employee, timesheets in employees_timesheets.items %}
+              {% for timesheet in timesheets %}
+                {% if timesheet.entries.all %}
+                  {% for entry in timesheet.entries.all %}
+                    <tr>
+                      {% if forloop.first and forloop.parentloop.first %}
+                        <td rowspan="{{ timesheet.entries.all|length }}">{{ employee.employee_id }}</td>
+                        <td rowspan="{{ timesheet.entries.all|length }}">{{ employee.user.username }}</td>
+                        <td rowspan="{{ timesheet.entries.all|length }}">{{ employee.department }}</td>
+                        <td rowspan="{{ timesheet.entries.all|length }}">{{ employee.sub_department|default:"-" }}</td>
+                        <td rowspan="{{ timesheet.entries.all|length }}">{{ employee.allocated_post.post_name.name|default:"-" }}</td>
+                      {% endif %}
+                      <td>{{ entry.duty.duty_name.name }}</td>
+                      <td>{{ timesheet.date }}</td>
+                      <td>{{ entry.hours }}</td>
+                      <td><span class="status status-{{ timesheet.status|lower }}">{{ timesheet.get_status_display }}</span></td>
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td>{{ employee.employee_id }}</td>
+                    <td>{{ employee.user.username }}</td>
+                    <td>{{ employee.department }}</td>
+                    <td>{{ employee.sub_department|default:"-" }}</td>
+                    <td>{{ employee.allocated_post.post_name.name|default:"-" }}</td>
+                    <td colspan="4" style="text-align: center;">No timesheet entries</td>
+                  </tr>
+                {% endif %}
+              {% endfor %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
+      {% if is_paginated %}
+        <div class="pagination">
+          {% if page_obj.has_previous %}
+            <a href="?page=1{% if selected_department %}&department={{ selected_department }}{% endif %}{% if selected_sub_department %}&sub_department={{ selected_sub_department }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">&laquo; First</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if selected_department %}&department={{ selected_department }}{% endif %}{% if selected_sub_department %}&sub_department={{ selected_sub_department }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">Previous</a>
+          {% endif %}
+          
+          <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+          </span>
+          
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if selected_department %}&department={{ selected_department }}{% endif %}{% if selected_sub_department %}&sub_department={{ selected_sub_department }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if selected_department %}&department={{ selected_department }}{% endif %}{% if selected_sub_department %}&sub_department={{ selected_sub_department }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">Last &raquo;</a>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="no-data">
+        <p>No timesheets found matching your criteria.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    // Update sub-department options when department changes
+    document.getElementById('department').addEventListener('change', function() {
+      const department = this.value;
+      const subDepartmentSelect = document.getElementById('sub_department');
+      
+      // Clear existing options
+      subDepartmentSelect.innerHTML = '<option value="">All Sub-Departments</option>';
+      
+      if (department) {
+        // Get sub-departments for the selected department
+        fetch(`/api/sub-departments/?department=${department}`)
+          .then(response => response.json())
+          .then(data => {
+            data.forEach(subDept => {
+              const option = document.createElement('option');
+              option.value = subDept[0];
+              option.textContent = subDept[1];
+              subDepartmentSelect.appendChild(option);
+            });
+          });
+      }
+    });
+    
+    // Submit form when filters change
+    const filterInputs = [
+      document.getElementById('department'),
+      document.getElementById('sub_department'),
+      document.getElementById('status'),
+      document.getElementById('date_from'),
+      document.getElementById('date_to')
+    ];
+    
+    filterInputs.forEach(input => {
+      input.addEventListener('change', function() {
+        const params = new URLSearchParams();
+        
+        filterInputs.forEach(input => {
+          if (input.value) {
+            params.append(input.name, input.value);
+          }
+        });
+        
+        window.location.search = params.toString();
+      });
+    });
+  </script>
+</body>
+</html>

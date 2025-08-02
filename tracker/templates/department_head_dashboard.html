@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ department }} Department - Head Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --danger-color: #e74c3c;
+      --light-gray: #f5f7fa;
+      --medium-gray: #e0e0e0;
+      --dark-gray: #95a5a6;
+      --text-color: #333;
+      --text-light: #7f8c8d;
+      --white: #ffffff;
+      --shadow: 0 4px 12px rgba(0,0,0,0.1);
+      --border-radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 1rem;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--light-gray);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background-color: var(--white);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: minmax(250px, 300px) minmax(300px, 1fr) minmax(250px, 300px);
+      gap: 1.5rem;
+    }
+
+    .header-info {
+      background-color: var(--light-gray);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1.5rem;
+      grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .header-info h2 {
+      margin: 0;
+      color: var(--secondary-color);
+    }
+
+    .header-info p {
+      margin: 0.5rem 0;
+      color: var(--text-color);
+    }
+
+    .panel {
+      background-color: var(--light-gray);
+      padding: 1.25rem;
+      border-radius: var(--border-radius);
+      height: calc(100vh - 200px);
+      overflow-y: auto;
+    }
+
+    .panel h3 {
+      margin-top: 0;
+      color: var(--secondary-color);
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--medium-gray);
+    }
+
+    .employee-item {
+      padding: 0.75rem;
+      margin-bottom: 0.75rem;
+      background-color: var(--white);
+      border-radius: var(--border-radius);
+      border: 1px solid var(--medium-gray);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .employee-item:hover {
+      background-color: #f0f2f5;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .employee-item.active {
+      background-color: #e3f2fd;
+      border-color: var(--primary-color);
+    }
+
+    .employee-item strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      color: var(--secondary-color);
+    }
+
+    .employee-item small {
+      color: var(--text-light);
+      font-size: 0.85rem;
+    }
+
+    .timesheet-card {
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background-color: var(--white);
+      border-radius: var(--border-radius);
+      border: 1px solid var(--medium-gray);
+      transition: all 0.2s ease;
+    }
+
+    .timesheet-card:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .timesheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .timesheet-header strong {
+      font-size: 1rem;
+    }
+
+    .timesheet-details {
+      margin-top: 0.75rem;
+    }
+
+    .duty-entry {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--medium-gray);
+    }
+
+    .duty-entry:last-child {
+      border-bottom: none;
+    }
+
+    .status {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+
+    .status.open { background-color: #e3f2fd; color: #1976d2; }
+    .status.submitted { background-color: #fff3e0; color: #f57c00; }
+    .status.approved { background-color: #e8f5e8; color: #388e3c; }
+    .status.rework { background-color: #fff8e1; color: #f9a825; }
+    .status.rejected { background-color: #ffebee; color: #d32f2f; }
+
+    .action-form {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px dashed var(--medium-gray);
+    }
+
+    .form-section {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: var(--white);
+      border-radius: var(--border-radius);
+      border: 1px solid var(--medium-gray);
+    }
+
+    .form-section h4 {
+      margin-top: 0;
+      color: var(--secondary-color);
+    }
+
+    select, input[type="text"], textarea, button {
+      padding: 0.6rem;
+      font-size: 0.9rem;
+      border-radius: 5px;
+      border: 1px solid var(--medium-gray);
+      width: 100%;
+      margin-bottom: 0.75rem;
+      transition: border-color 0.2s;
+    }
+
+    select:focus, input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    button {
+      background-color: var(--secondary-color);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+      padding: 0.7rem;
+    }
+
+    button:hover {
+      background-color: #1a252f;
+      transform: translateY(-1px);
+    }
+
+    .post-duty-item {
+      margin-bottom: 1rem;
+      background: var(--white);
+      padding: 0.75rem;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--medium-gray);
+    }
+
+    .duty-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      background: var(--light-gray);
+      border-radius: 5px;
+    }
+
+    .remove-duty-btn {
+      background-color: var(--danger-color);
+      color: white;
+      border: none;
+      padding: 0.3rem 0.6rem;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .remove-duty-btn:hover {
+      background-color: #c0392b;
+    }
+
+    .logout-link {
+      margin-top: 1.5rem;
+      text-align: right;
+      grid-column: 1 / -1;
+    }
+
+    .logout-link a {
+      color: var(--danger-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .logout-link a:hover {
+      color: #c0392b;
+      text-decoration: underline;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .stat-card {
+      background: var(--white);
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--medium-gray);
+      text-align: center;
+    }
+
+    .stat-card h5 {
+      margin: 0 0 0.5rem;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    .stat-card p {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 0;
+      color: var(--secondary-color);
+    }
+
+    .employee-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .employee-selector select {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 1024px) {
+      .container {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .panel {
+        height: auto;
+        max-height: 500px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+      
+      .panel {
+        max-height: none;
+        height: auto;
+      }
+
+      .header-info {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .employee-selector {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .employee-selector select {
+        width: 100%;
+      }
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--light-gray);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--dark-gray);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-info">
+      <div>
+        <h2>Department Head Dashboard</h2>
+        <p><strong>Department:</strong> {{ department }} | <strong>Sub-Department:</strong> {{ sub_department }}</p>
+      </div>
+      <div>
+        <p><strong>Welcome:</strong> {{ dept_head.user.username }}</p>
+      </div>
+    </div>
+
+    <!-- Left Panel - Employee List -->
+    <div class="panel">
+      <h3>Department Employees</h3>
+      {% for emp in department_employees %}
+      <div class="employee-item {% if selected_employee and selected_employee.id == emp.id %}active{% endif %}" 
+           onclick="window.location='?employee_id={{ emp.employee_id }}'">
+        <strong>{{ emp.user.username }}</strong>
+        <div>
+          <small>ID: {{ emp.employee_id }}</small><br>
+          <small>Post: {{ emp.allocated_post.post_name.name|default:"Not assigned" }}</small>
+        </div>
+      </div>
+      {% empty %}
+      <p>No employees in your department</p>
+      {% endfor %}
+    </div>
+
+    <!-- Middle Panel - Timesheets -->
+    <div class="panel">
+      {% if selected_employee %}
+      <div style="margin-bottom: 1.5rem;">
+        <h3>{{ selected_employee.user.username }}'s Timesheets</h3>
+        <div class="employee-selector">
+          <form method="post" style="flex: 1; display: flex; gap: 0.5rem;">
+            {% csrf_token %}
+            <input type="hidden" name="employee_id" value="{{ selected_employee.employee_id }}">
+            <select name="allocated_post" style="flex: 1;">
+              {% for post in department_posts %}
+                <option value="{{ post.id }}" {% if selected_employee.allocated_post and selected_employee.allocated_post.id == post.id %}selected{% endif %}>
+                  {{ post.post_name.name }}
+                </option>
+              {% endfor %}
+            </select>
+            <button type="submit" style="max-width: 120px;">Update Post</button>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Display assigned duties for the selected employee -->
+      <div style="margin-bottom: 1.5rem;">
+        <h4>Assigned Duties</h4>
+        {% if selected_employee.duties.all %}
+          <ul style="padding-left: 0; list-style: none; margin: 0;">
+            {% for duty in selected_employee.duties.all %}
+            <li class="duty-item">
+              <span>{{ duty.duty_name.name }}</span>
+              <form method="post" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="remove_duty_id" value="{{ duty.id }}">
+                <button type="submit" class="remove-duty-btn">Remove</button>
+              </form>
+            </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p style="background: var(--white); padding: 0.75rem; border-radius: 5px; border: 1px solid var(--medium-gray);">
+            No duties assigned yet
+          </p>
+        {% endif %}
+      </div>
+      
+      {% if employee_timesheets %}
+        {% for ts in employee_timesheets %}
+        <div class="timesheet-card">
+          <div class="timesheet-header">
+            <strong>{{ ts.date }}</strong>
+            <span class="status {{ ts.status|lower }}">{{ ts.status }}</span>
+          </div>
+          
+          <div class="timesheet-details">
+            {% for entry in ts.entries.all %}
+            <div class="duty-entry">
+              <span>{{ entry.duty.duty_name.name }}</span>
+              <span>{{ entry.hours }} hours</span>
+            </div>
+            {% endfor %}
+            
+            {% if ts.department_head_remark %}
+            <div style="margin-top: 0.75rem; padding: 0.75rem; background: var(--light-gray); border-radius: 5px; font-size: 0.9rem;">
+              <strong>Your Remark:</strong> {{ ts.department_head_remark }}
+            </div>
+            {% endif %}
+          </div>
+          
+          <form method="post" class="action-form">
+            {% csrf_token %}
+            <input type="hidden" name="ts_id" value="{{ ts.id }}">
+            <select name="action" required>
+              <option value="">Select Action</option>
+              <option value="Approved" {% if ts.status == "Approved" %}selected{% endif %}>Approve</option>
+              <option value="Rejected" {% if ts.status == "Rejected" %}selected{% endif %}>Reject</option>
+              <option value="Rework" {% if ts.status == "Rework" %}selected{% endif %}>Request Rework</option>
+            </select>
+            <textarea name="department_head_remark" placeholder="Add remark (required for Rejected/Rework)">{{ ts.department_head_remark|default_if_none:'' }}</textarea>
+            <button type="submit">Update Status</button>
+          </form>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div style="background: var(--white); padding: 1rem; border-radius: 5px; border: 1px solid var(--medium-gray);">
+          <p>No timesheets found for this employee.</p>
+        </div>
+      {% endif %}
+      {% else %}
+        <div style="background: var(--white); padding: 1rem; border-radius: 5px; border: 1px solid var(--medium-gray); text-align: center;">
+          <h3>Select an employee to view timesheets</h3>
+          <p>Click on an employee from the list to view and manage their timesheets</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Right Panel - Posts & Duties Management -->
+    <div class="panel">
+      <h3>Manage Posts & Duties</h3>
+      
+      <div class="form-section">
+        <h4>Create New Post</h4>
+        <form method="post">
+          {% csrf_token %}
+          <select name="new_post_name" required>
+            <option value="">Select Post Name</option>
+            {% for post_name in post_names %}
+              <option value="{{ post_name.id }}">{{ post_name.name }}</option>
+            {% endfor %}
+          </select>
+          <textarea name="new_post_description" placeholder="Description (optional)"></textarea>
+          <button type="submit">Create Post</button>
+        </form>
+      </div>
+      
+      <div class="form-section">
+        <h4>Assign Duty to Employee</h4>
+        <form method="post">
+          {% csrf_token %}
+          <select name="assign_duty_employee" required>
+            <option value="">Select Employee</option>
+            {% for emp in department_employees %}
+              <option value="{{ emp.employee_id }}">{{ emp.user.username }}</option>
+            {% endfor %}
+          </select>
+          <select name="assign_duty_name" required>
+            <option value="">Select Duty Name</option>
+            {% for duty_name in duty_names %}
+              <option value="{{ duty_name.id }}">{{ duty_name.name }}</option>
+            {% endfor %}
+          </select>
+          <textarea name="assign_duty_description" placeholder="Description (optional)"></textarea>
+          <button type="submit">Assign Duty</button>
+        </form>
+      </div>
+
+      <div class="form-section">
+        <h4>Create New Employee</h4>
+        <form method="post">
+          {% csrf_token %}
+          <input type="text" name="new_employee_id" placeholder="Employee ID" required>
+          <input type="text" name="new_employee_username" placeholder="Username" required>
+          <select name="new_employee_post" required>
+            <option value="">Select Post</option>
+            {% for post in department_posts %}
+              <option value="{{ post.id }}">{{ post.post_name.name }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit">Create Employee</button>
+        </form>
+      </div>
+      
+      <div class="form-section">
+        <h4>Department Statistics</h4>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h5>Pending Timesheets</h5>
+            <p>{{ pending_timesheets.count }}</p>
+          </div>
+          <div class="stat-card">
+            <h5>Approved Timesheets</h5>
+            <p>{{ approved_timesheets.count }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="logout-link">
+      <a href="{% url 'logout' %}">Logout</a>
+    </div>
+  </div>
+</body>
+</html>

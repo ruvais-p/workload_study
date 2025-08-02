@@ -1,0 +1,26 @@
+<table>
+  <tr>
+    <th>Employee</th><th>Date</th><th>Category</th><th>Description</th><th>Hours</th><th>Status</th><th>Remark</th><th>Action</th>
+  </tr>
+  {% for ts in timesheets %}
+  <tr>
+    <td>{{ ts.user.username }}</td>
+    <td>{{ ts.date }}</td>
+    <td>{{ ts.category }}</td>
+    <td>{{ ts.work_description }}</td>
+    <td>{{ ts.hours }}</td>
+    <td>{{ ts.status }}</td>
+    <td>{{ ts.admin_remark }}</td>
+    <td>
+      <form method="post" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="ts_id" value="{{ ts.id }}">
+        <input type="text" name="admin_remark" placeholder="Remark" value="{{ ts.admin_remark|default_if_none:'' }}">
+        <button name="action" value="Approved">Approve</button>
+        <button name="action" value="Rework">Rework</button>
+        <button name="action" value="Rejected">Reject</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>

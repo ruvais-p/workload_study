@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Department Head Signup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .signup-box {
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 1.5rem;
+    }
+
+    form p {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      font-weight: 500;
+      display: block;
+      margin-bottom: 4px;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background-color 0.2s ease;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #1f2e3c;
+    }
+
+    .login-link {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    .login-link a {
+      color: #2c3e50;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    .loading {
+      text-align: center;
+      margin-top: 1rem;
+      display: none;
+      color: #555;
+    }
+
+    @media (max-width: 480px) {
+      .signup-box {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-box">
+    <h2>Department Head Signup</h2>
+    <form method="post" onsubmit="showLoading()">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Sign Up</button>
+      <div id="loading" class="loading">Processing...</div>
+    </form>
+    <div class="login-link">
+      Already have an account?
+      <a href="{% url 'department_head_signin' %}">Sign in</a>
+    </div>
+  </div>
+
+  <script>
+    function showLoading() {
+      document.getElementById('loading').style.display = 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const departmentSelect = document.querySelector('#id_department');
+      const subDepartmentSelect = document.querySelector('#id_sub_department');
+      
+      // Define sub-department options for each department
+      const subDepartments = {
+        'ADM': [
+        ['Sessional-Head', 'Sessional Head'],
+        ['ADM-Research', 'ADM Research'],
+        ['B-Employee', 'B Employee'],
+    ],
+    'SOE': [
+        ['CSE', 'Department of Computer Science'],
+        ['CE', 'Department of Civil'],
+        ['ECE', 'Department of Electronics'],
+        ['ME', 'Department of Mechanical'],
+        ['EE', 'Department of Electrical'],
+    ],
+    'SLS': [
+        ['xxxxx', 'xxxx'],
+        ['yyyyy', 'yyyy'],
+    ],
+      };
+      
+      // Update sub-department options when department changes
+      departmentSelect.addEventListener('change', function() {
+        const selectedDept = this.value;
+        subDepartmentSelect.innerHTML = '';
+        
+        // Add default empty option
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Select Sub-Department';
+        subDepartmentSelect.appendChild(defaultOption);
+        
+        if (selectedDept && subDepartments[selectedDept]) {
+          subDepartments[selectedDept].forEach(function(option) {
+            const opt = document.createElement('option');
+            opt.value = option[0];
+            opt.textContent = option[1];
+            subDepartmentSelect.appendChild(opt);
+          });
+          subDepartmentSelect.disabled = false;
+        } else {
+          subDepartmentSelect.disabled = true;
+        }
+      });
+      
+      // Trigger change event on page load if department is already selected
+      if (departmentSelect.value) {
+        departmentSelect.dispatchEvent(new Event('change'));
+      }
+    });
+  </script>
+</body>
+</html>
