@@ -7,7 +7,11 @@ SECRET_KEY = 'django-insecure-)c=6rh+t5zf2z0(tyg&xov-(m@8z)mz7ubzfawo_=v&z(v+1qm
 
 DEBUG = False  # Set to False for production
 
-ALLOWED_HOSTS = ['*']  # Or replace '*' with your Vercel domain
+ALLOWED_HOSTS = [
+    'workload-study-1.onrender.com',
+    'localhost',
+    '127.0.0.1',
+]
 
 # Application definition
 INSTALLED_APPS = [
