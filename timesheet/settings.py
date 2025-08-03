@@ -17,6 +17,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic'
     'tracker',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -29,6 +30,7 @@ INSTALLED_APPS = [
 # Middleware - order is critical for sessions to work
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'tracker.middleware.PersistentSessionMiddleware',  # Must come before auth
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
