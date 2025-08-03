@@ -12,6 +12,10 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
 ]
+CSRF_TRUSTED_ORIGINS = [
+    'https://workload-study-1.onrender.com',
+]
+
 
 # Application definition
 INSTALLED_APPS = [
