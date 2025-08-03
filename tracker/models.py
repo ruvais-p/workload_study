@@ -4,20 +4,28 @@ from django.db import models
 # Add this at the top of models.py
 SUB_DEPARTMENT_CHOICES = {
     'ADM': [
-        ('Sessional-Head', 'Sessional Head'),
-        ('ADM-Research', 'ADM Research'),
-        ('B-Employee', 'B Employee'),
+        ('Admin', 'Admin'),
+        ('Exam', 'Exam'),
+        ('Finance', 'Finance'),
+        ('Security', 'Secutirty'),
+        ('Engineering Dept', 'Engineering Dept'),
+        ('CIRM', 'CIRM'),
+        ('Library', 'Library'),
+        ('Hostel Office', 'Hostel office'),
+        ('Union office', 'Union Office'),
+        ('Physical Education', 'Physical Education'),
+        ('Youth Welfare', 'Youth Welfare'),
+        ('UGC Cell', 'UGC Cell'),
     ],
     'SOE': [
-        ('CSE', 'Department of Computer Science'),
-        ('CE', 'Department of Civil'),
-        ('ECE', 'Department of Electronics'),
-        ('ME', 'Department of Mechanical'),
-        ('EE', 'Department of Electrical'),
+        ('CSE', 'Department of Computer Science Engineering'),
+        ('CE', 'Department of Civil Engineering'),
+        ('ECE', 'Department of Electronics Engineering'),
+        ('ME', 'Department of Mechanical Engineering'),
+        ('EE', 'Department of Electrical Engineering'),
     ],
-    'SLS': [
-        ('xxxxx', 'xxxx'),
-        ('yyyyy', 'yyyy'),
+    'NAS': [
+        ('NAS', 'Naval Architecture Studies')
     ],
     # Add more departments and their sub-departments as needed
 }

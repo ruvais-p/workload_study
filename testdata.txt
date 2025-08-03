@@ -1,9 +1,24 @@
-employee...
-    20223087
-    emp1
-    test@123
-
-sdmin
-    987456
-    admin1
-    test@123
+    'ADM': [
+        ['Admin', 'Admin'],
+        ['Exam', 'Exam'],
+        ['Finance', 'Finance'],
+        ['Security', 'Secutirty'],
+        ['Engineering Dept', 'Engineering Dept'],
+        ['CIRM', 'CIRM'],
+        ['Library', 'Library'],
+        ['Hostel Office', 'Hostel office'],
+        ['Union office', 'Union Office'],
+        ['Physical Education', 'Physical Education'],
+        ['Youth Welfare', 'Youth Welfare'],
+        ['UGC Cell', 'UGC Cell'],
+    ],
+    'SOE': [
+        ['CSE', 'Department of Computer Science Engineering'],
+        ['CE', 'Department of Civil Engineering'],
+        ['ECE', 'Department of Electronics Engineering'],
+        ['ME', 'Department of Mechanical Engineering'],
+        ['EE', 'Department of Electrical Engineering'],
+    ],
+    'NAS': [
+        ['NAS', 'Naval Architecture Studies']
+    ],

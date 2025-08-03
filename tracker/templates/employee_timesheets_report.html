@@ -118,6 +118,7 @@
       border-collapse: collapse;
       margin-top: 20px;
       font-size: 14px;
+      border: 1px solid var(--medium-gray);
     }
 
     th, td {
@@ -135,8 +136,35 @@
       top: 0;
     }
 
-    tr:hover {
-      background-color: rgba(0,0,0,0.02);
+    .employee-group {
+      border-top: 2px solid var(--medium-gray);
+    }
+    
+    .employee-group:first-child {
+      border-top: none;
+    }
+    
+    .employee-header {
+      background-color: #f8f9fa;
+      font-weight: bold;
+    }
+    
+    .employee-header td {
+      padding-top: 16px;
+      padding-bottom: 8px;
+    }
+    
+    .duty-row td {
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+    
+    .duty-row:last-child td {
+      padding-bottom: 16px;
+    }
+    
+    .empty-cell {
+      color: var(--dark-gray);
     }
 
     .status {
@@ -306,34 +334,41 @@
           </thead>
           <tbody>
             {% for employee, timesheets in employees_timesheets.items %}
-              {% for timesheet in timesheets %}
-                {% if timesheet.entries.all %}
+              <tr class="employee-group">
+                <tr class="employee-header">
+                  <td>{{ employee.employee_id }}</td>
+                  <td>{{ employee.user.username }}</td>
+                  <td>{{ employee.department }}</td>
+                  <td>{{ employee.sub_department|default:"-" }}</td>
+                  <td>{{ employee.allocated_post.post_name.name|default:"-" }}</td>
+                  <td colspan="4"></td>
+                </tr>
+                
+                {% for timesheet in timesheets %}
                   {% for entry in timesheet.entries.all %}
-                    <tr>
-                      {% if forloop.first and forloop.parentloop.first %}
-                        <td rowspan="{{ timesheet.entries.all|length }}">{{ employee.employee_id }}</td>
-                        <td rowspan="{{ timesheet.entries.all|length }}">{{ employee.user.username }}</td>
-                        <td rowspan="{{ timesheet.entries.all|length }}">{{ employee.department }}</td>
-                        <td rowspan="{{ timesheet.entries.all|length }}">{{ employee.sub_department|default:"-" }}</td>
-                        <td rowspan="{{ timesheet.entries.all|length }}">{{ employee.allocated_post.post_name.name|default:"-" }}</td>
-                      {% endif %}
+                    <tr class="duty-row">
+                      <td class="empty-cell"></td>
+                      <td class="empty-cell"></td>
+                      <td class="empty-cell"></td>
+                      <td class="empty-cell"></td>
+                      <td class="empty-cell"></td>
                       <td>{{ entry.duty.duty_name.name }}</td>
-                      <td>{{ timesheet.date }}</td>
+                      <td>{{ timesheet.date|date:"M. j, Y" }}</td>
                       <td>{{ entry.hours }}</td>
                       <td><span class="status status-{{ timesheet.status|lower }}">{{ timesheet.get_status_display }}</span></td>
                     </tr>
+                  {% empty %}
+                    <tr class="duty-row">
+                      <td class="empty-cell"></td>
+                      <td class="empty-cell"></td>
+                      <td class="empty-cell"></td>
+                      <td class="empty-cell"></td>
+                      <td class="empty-cell"></td>
+                      <td colspan="4" style="text-align: center;">No timesheet entries</td>
+                    </tr>
                   {% endfor %}
-                {% else %}
-                  <tr>
-                    <td>{{ employee.employee_id }}</td>
-                    <td>{{ employee.user.username }}</td>
-                    <td>{{ employee.department }}</td>
-                    <td>{{ employee.sub_department|default:"-" }}</td>
-                    <td>{{ employee.allocated_post.post_name.name|default:"-" }}</td>
-                    <td colspan="4" style="text-align: center;">No timesheet entries</td>
-                  </tr>
-                {% endif %}
-              {% endfor %}
+                {% endfor %}
+              </tr>
             {% endfor %}
           </tbody>
         </table>
@@ -407,6 +442,23 @@
         });
         
         window.location.search = params.toString();
+      });
+    });
+
+    // Format dates on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      const dateCells = document.querySelectorAll('td:nth-child(7)');
+      dateCells.forEach(cell => {
+        if (cell.textContent.trim()) {
+          const date = new Date(cell.textContent);
+          if (!isNaN(date.getTime())) {
+            cell.textContent = date.toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric'
+            });
+          }
+        }
       });
     });
   </script>

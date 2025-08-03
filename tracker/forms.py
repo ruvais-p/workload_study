@@ -5,7 +5,7 @@ from .models import SUB_DEPARTMENT_CHOICES, User, Employee, DepartmentHead, Time
 DEPARTMENT_CHOICES = [
     ('ADM', 'Adminstrative Office'),
     ('SOE', 'School of Engineering'),
-    ('SLS', 'School of Life Sciences'),
+    ('NAS', 'Naval Architecture Studies')
     # Add more as needed
 ]
 
