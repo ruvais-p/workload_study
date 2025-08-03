@@ -1,6 +1,5 @@
 asgiref==3.8.1
 backports.zoneinfo==0.2.1
-catkin==0.8.12
 django==4.2.23
 et-xmlfile==2.0.0
 gencpp==0.7.2
